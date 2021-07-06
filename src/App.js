@@ -1,9 +1,37 @@
-import React, { useState } from "react";
+import React, { useState, useReducer } from "react";
 import "./App.css";
 import "./styles.css";
 
+const initialState = {
+  count: 0
+};
+
+const reducerFunction = (state = initialState, action) => {
+  switch (action.type) {
+    case "INCREMENT":
+      return {
+        ...state,
+        count: state.count + 1
+      };
+    case "DECREMENT":
+      return {
+        ...state,
+        count: state.count - 1
+      };
+    case "INITCOUNT":
+      return {
+        ...state,
+        count: action.payload
+      };
+    default:
+      return state;
+  }
+};
+
 export default function App() {
   const [input, setInput] = useState(0);
+
+  const [state, dispatch] = useReducer(reducerFunction, initialState);
 
   return (
     <div className="App">
@@ -16,11 +44,13 @@ export default function App() {
           value={input}
         />
         <br />
-        <button>Initialize Counter </button>
+        <button onClick={() => dispatch({ type: "INITCOUNT", payload: input })}>
+          Initialize Counter{" "}
+        </button>
       </div>
-      <p>0</p>
-      <button>Incrment</button>
-      <button>Decrement</button>
+      <p>{state.count}</p>
+      <button onClick={() => dispatch({ type: "INCREMENT" })}>Incrment</button>
+      <button onClick={() => dispatch({ type: "DECREMENT" })}>Decrement</button>
     </div>
   );
 }
